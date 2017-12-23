@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="BackgammonProject.Pages.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BackgammonProject.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="{Binding Source={StaticResource Locator},Path=LoginVM}">
+
+    <Grid Background="White">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+               
+        <Button Name="menu" Content="▼" FontSize="60" VerticalAlignment="Top" Grid.Row="0"/>
+        <TextBlock Name="title" Text="Shlook TalkBack" FontSize="60" HorizontalAlignment="Center" Grid.Row="0"/>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+            <TextBlock Name="header1" Text="Welcome to" FontSize="70" HorizontalAlignment="Center" Foreground="Black"/>
+            <TextBlock Name="header2" Text="Shlook TalkBack" FontSize="100" Foreground="Black"/>
+            <TextBlock Name="header3" Text="Messanger" FontSize="70" HorizontalAlignment="Center" Foreground="Black"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+            <TextBox Name="userName" PlaceholderText="User name" FontSize="50" Foreground="Black"/>
+            <PasswordBox Name="password" PlaceholderText="Password" FontSize="50" Foreground="Black"/>
+            <Button Name="signInBtn" Content="Sign in" FontSize="70" HorizontalAlignment="Center" Foreground="Black" Margin="50"/>
+        </StackPanel>
+        
+    </Grid>
+</Page>
