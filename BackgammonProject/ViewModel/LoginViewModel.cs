@@ -16,14 +16,16 @@ namespace BackgammonProject.ViewModel
     {
         private readonly ILoginService _loginService;
         private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigationService;
         public ICommand LoginCommand { get; set; }
 
         public User CurrentUser { get; set; }
 
-        public LoginViewModel(ILoginService loginService, IDialogService dialogService)
+        public LoginViewModel(ILoginService loginService, IDialogService dialogService, INavigationService navigationService)
         {
             _loginService = loginService;
             _dialogService = dialogService;
+            _navigationService = navigationService;
 
             CurrentUser = new User();
 
@@ -33,9 +35,9 @@ namespace BackgammonProject.ViewModel
 
                 if (contactsList == null)
                     _dialogService.ShowMessageBox("Password incorrect", "Error");
-
                 else
-                    ;//navigate to contects page
+                    _navigationService.NavigateTo("ContactsPage", contactsList);
+                _navigationService.NavigateTo("ContactsPage", contactsList);
             });
         }
     }

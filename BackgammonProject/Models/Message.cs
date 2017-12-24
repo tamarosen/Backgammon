@@ -9,7 +9,10 @@ namespace BackgammonProject.Models
 {
     public class Message : INotifyPropertyChanged
     {
-        public int MyProperty { get; set; }
+        public string MessageContent { get; set; }
+        public DateTime TimeSent { get; set; }
+        public Contact Sender { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

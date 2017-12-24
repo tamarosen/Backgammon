@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="BackgammonProject.MainPage"
+    x:Class="BackgammonProject.ContactsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:BackgammonProject"
@@ -20,9 +20,9 @@
         <Button Name="Menu" Content="▼" FontSize="60" VerticalAlignment="Top" Grid.Row="0"/>
         <TextBlock Name="Title" Text="Shlook TalkBack" FontSize="60" HorizontalAlignment="Center" Grid.Row="0"/>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Spacing="50">
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center"> <!--Space="20"-->
             <TextBlock Name="userName" Text="Temporary UserName" FontSize="70"/>
-            <StackPanel Orientation="Horizontal" Spacing="100" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> <!--Space="20"-->
                 <Button Name="chatBtn" Content="chat image" FontSize="40"/>
                 <Button Name="gameBtn" Content="game image" FontSize="40"/>
             </StackPanel>
@@ -30,12 +30,32 @@
 
         <StackPanel Grid.Row="2">
             <TextBlock Name="onlineContacts" Text="Online contacts:" FontSize="50"/>
-            <ListBox Name="onlineList" ItemTemplate="{StaticResource ContactsDataTemplate}"/>
+            <!--<ListBox Name="onlineList" ItemsSource="{Binding Contacts}" ItemTemplate="{StaticResource ContactsDataTemplate}"/>-->
+            <ListBox Name="onlineList" ItemsSource="{Binding OnlineContacts}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <Ellipse Width="20" Height="20" Fill="Green"/>
+                            <TextBlock Text="{Binding OnlineContacts.Name}" FontSize="20"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
 
         <StackPanel Grid.Row="3">
             <TextBlock Name="offlineContacts" Text="Offline contacts:" FontSize="50"/>
-            <ListBox Name="offlineList" ItemTemplate="{StaticResource ContactsDataTemplate}"/>
+            <!--<ListBox Name="offlineList" ItemsSource="{Binding Contacts}" ItemTemplate="{StaticResource ContactsDataTemplate}"/>-->
+            <ListBox Name="offlineList" ItemsSource="{Binding OfflineContacts}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <Ellipse Width="20" Height="20" Fill="Orange"/>
+                            <TextBlock Text="{Binding OfflineContacts.Name}" FontSize="20"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
         
     </Grid>
