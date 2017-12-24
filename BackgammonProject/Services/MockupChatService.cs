@@ -15,8 +15,8 @@ namespace BackgammonProject.Services
         {
             chatHistory = new List<Message>()
             {
-               
-            }
+
+            };
         }
         public IList<Message> GetChatHistory(Contact contact, User user)
         {

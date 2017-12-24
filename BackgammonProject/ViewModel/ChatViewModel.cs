@@ -23,11 +23,11 @@ namespace BackgammonProject.ViewModel
 
         public ChatViewModel()
         {
-              
+
             SendCommand = new RelayCommand(() =>
             {
 
-            })
+            });
         }
     }
 }
