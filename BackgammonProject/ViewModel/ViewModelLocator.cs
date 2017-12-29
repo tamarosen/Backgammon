@@ -32,12 +32,12 @@ namespace BackgammonProject.ViewModel
             //ViewModels
             SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<ContactsViewModel>();
-            SimpleIoc.Default.Register<ChatViewModel>();
+            SimpleIoc.Default.Register<ChatViewModel>(true);
 
             //Services
             SimpleIoc.Default.Register<INavigationService>(() => nav);
-            SimpleIoc.Default.Register<IDialogService>();
-            SimpleIoc.Default.Register<ILoginService, MockupLoginService>();
+            //SimpleIoc.Default.Register<IDialogService>();
+            //SimpleIoc.Default.Register<ILoginService, MockupLoginService>();
         }
 
         public LoginViewModel LoginVM

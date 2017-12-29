@@ -1,15 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Xml.Linq;
 
 namespace BackgammonProject.Models
 {
-    public class Contact : AbstractXmlSerializable, INotifyPropertyChanged
+    class ChatRequestResponse: AbstractXmlSerializable
     {
-        public string Name { get; set; }
-        public bool IsOnline { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public bool Success { get; set; }
+        public string ErrorMessage { get; set; }
 
         public override bool FromXml(XElement xmlElement)
         {
@@ -17,8 +14,8 @@ namespace BackgammonProject.Models
             {
                 return false;
             }
-            this.Name = xmlElement.Element("Name").Value;
-            this.IsOnline = Boolean.Parse(xmlElement.Element("IsOnline").Value);
+            this.Success = Boolean.Parse(xmlElement.Element("Success").Value);
+            this.ErrorMessage = xmlElement.Element("ErrorMessage").Value;
             return true;
         }
 
@@ -26,8 +23,8 @@ namespace BackgammonProject.Models
         {
             XElement serialized = new XElement(GetStringType(),
                 new XElement("Type", GetStringType()),
-                new XElement("Name", Name),
-                new XElement("IsOnline", IsOnline.ToString()));
+                new XElement("Success", Success.ToString()),
+                new XElement("ErrorMessage", ErrorMessage));
             return serialized;
         }
     }

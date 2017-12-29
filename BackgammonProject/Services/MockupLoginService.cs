@@ -16,8 +16,8 @@ namespace BackgammonProject.Services
             //Get all users from DB
             users = new List<User>()
             {
-                new User(){ Name="tamar", Password="123456", IsOnline=true},
-                new User(){ Name="ramat", Password="654321", IsOnline=false}
+                new User(){ Name="tamar", Password="123456"},
+                new User(){ Name="ramat", Password="654321"}
             };
         }
 
@@ -27,7 +27,7 @@ namespace BackgammonProject.Services
             List<Contact> contacts = new List<Contact>();
             foreach (var user in users)
             {
-                Contact contact = new Contact() { Name = user.Name, IsOnline = user.IsOnline };
+                Contact contact = new Contact() { Name = user.Name, IsOnline = true };
                 contacts.Add(contact);
             }
             return contacts;
@@ -46,13 +46,12 @@ namespace BackgammonProject.Services
             {
                 return null;
             }
-            _user.IsOnline = true;
             return ConvertUsersToContacts();
         }
 
         private void CreateNewUser(User user)
         {
-            users.Add(new User { Name = user.Name, Password = user.Password, IsOnline = true });
+            users.Add(new User { Name = user.Name, Password = user.Password });
         }
 
         public IList<Contact> GetAllContacts()

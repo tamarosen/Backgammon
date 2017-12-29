@@ -1,17 +1,11 @@
-﻿using System.ComponentModel;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace BackgammonProject.Models
 {
-    public class Message : AbstractXmlSerializable, INotifyPropertyChanged
+    class ChatRequest : AbstractXmlSerializable
     {
-        public string Content { get; set; }
         public string From { get; set; }
         public string To { get; set; }
-        //public DateTime TimeSent { get; set; }
-        //public Contact Sender { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public override bool FromXml(XElement xmlElement)
         {
@@ -21,7 +15,6 @@ namespace BackgammonProject.Models
             }
             this.From = xmlElement.Element("From").Value;
             this.To = xmlElement.Element("To").Value;
-            this.Content = xmlElement.Element("Content").Value;
             return true;
         }
 
@@ -30,8 +23,7 @@ namespace BackgammonProject.Models
             XElement serialized = new XElement(GetStringType(),
                 new XElement("Type", GetStringType()),
                 new XElement("From", From),
-                new XElement("To", To),
-                new XElement("Content", Content));
+                new XElement("To", To));
             return serialized;
         }
     }
