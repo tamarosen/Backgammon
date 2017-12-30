@@ -6,7 +6,7 @@ namespace BackgammonProject.Models
 {
     public class ModelXmlMapper
     {
-        enum MappedType
+        public enum MappedType
         {
             UNDEFINED,
             MESSAGE,
@@ -18,7 +18,7 @@ namespace BackgammonProject.Models
             LOGIN_RESPONSE
         };
 
-        static IDictionary<string, MappedType> map = new Dictionary<string, MappedType>
+        static public IDictionary<string, MappedType> map = new Dictionary<string, MappedType>
         {
             { AbstractXmlSerializable.GetStringType(typeof(Message)), MappedType.MESSAGE },
             { AbstractXmlSerializable.GetStringType(typeof(Contact)), MappedType.CONTACT },
@@ -31,9 +31,14 @@ namespace BackgammonProject.Models
 
         public static AbstractXmlSerializable FromXmlString(string xmlDoc)
         {
-            XDocument serialized = XDocument.Load(xmlDoc);
-            string type = serialized.Element("Type").Value;
             MappedType t = MappedType.UNDEFINED;
+            XDocument serialized = XDocument.Load(xmlDoc);
+            XElement typeElement = serialized.Element("Type");
+            if (typeElement == null)
+            {
+                return null;
+            }
+            string type = typeElement.Value;
             if (ModelXmlMapper.map.TryGetValue(type, out t)) {
                 switch (t)
                 {
@@ -85,6 +90,16 @@ namespace BackgammonProject.Models
                 array.Add(obj.ToXml().ToString());
             }
             return array.ToString();
+        }
+
+        public static IList<AbstractXmlSerializable> FromArrayXml(XElement xml)
+        {
+            IList<AbstractXmlSerializable> list = new List<AbstractXmlSerializable>();
+            foreach (var elem in xml.Elements())
+            {
+                list.Add(ModelXmlMapper.FromXmlString(elem.ToString()));
+            }
+            return list;
         }
     }
 }

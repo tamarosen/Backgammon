@@ -2,17 +2,8 @@
 using BackgammonProject.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Views;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
-using Windows.UI.Core;
 
 namespace BackgammonProject.ViewModel
 {

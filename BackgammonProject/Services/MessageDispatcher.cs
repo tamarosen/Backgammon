@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.ApplicationModel.Core;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
@@ -115,15 +116,8 @@ namespace BackgammonProject.Services
             // First check if we got array:
             if (xmlDoc.Root.Name.Equals("Array"))
             {
-                IList<AbstractXmlSerializable> list = new List<AbstractXmlSerializable>();
-                XElement first = (XElement)xmlDoc.FirstNode;
-                string typeInList = first == null ? "Undefined" : first.Element("Type").Value;
-                foreach (var elem in xmlDoc.Root.Elements())
-                {
-                    list.Add(ModelXmlMapper.FromXmlString(elem.ToString()));
-                }
 
-                DispatchListMsg(list, typeInList);
+                DispatchListMsg(xmlDoc.Root);
             }
             else
             {
@@ -131,9 +125,25 @@ namespace BackgammonProject.Services
             }
         }
 
-        private void DispatchListMsg(IList<AbstractXmlSerializable> list, string typeInList)
+        private void DispatchListMsg(XElement xmlList)
         {
-            throw new NotImplementedException();
+            ModelXmlMapper.MappedType typeInList = ModelXmlMapper.MappedType.UNDEFINED;
+            XElement first = (XElement)xmlList.FirstNode;
+            if (first != null)
+            {
+                XElement firstElementType = first.Element("Type");
+                if (firstElementType != null)
+                {
+                    if (ModelXmlMapper.map.TryGetValue(firstElementType.Value, out typeInList))
+                    {
+                        typeInList = ModelXmlMapper.MappedType.UNDEFINED;
+                    }
+                }
+            }
+
+            IList<AbstractXmlSerializable> list = ModelXmlMapper.FromArrayXml(xmlList);
+
+            // continue with dispatching code...
         }
 
         private async void DispatchSingleObjectMsg(XElement xmlObj)
@@ -143,7 +153,7 @@ namespace BackgammonProject.Services
             if (msg.FromXml(xmlObj))
             {
                 string message = msg.From + ": " + msg.Content;
-                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
                     CoreDispatcherPriority.Normal,
                     () =>
                     {
