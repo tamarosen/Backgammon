@@ -8,19 +8,9 @@ namespace BackgammonProject.Models
         public string Name { get; set; }
         public string Password { get; set; }
 
-        public User()
-        {
-            this.Name = null;
-        }
-
-        public User(string currentUser)
-        {
-            this.Name = currentUser;
-        }
-
         public override bool FromXml(XElement xmlElement)
         {
-            if (!valid(xmlElement))
+            if (!Valid(xmlElement))
             {
                 return false;
             }

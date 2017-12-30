@@ -1,4 +1,5 @@
-﻿using BackgammonProject.ViewModel;
+﻿using BackgammonProject.Models;
+using BackgammonProject.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace BackgammonProject.Services
         // singleton
         public static AppContext self = null;
 
-        public string CurrentUser { get; set; }
+        public User CurrentUser { get; set; }
         public MessageWebSocket MyWebSocket { get; set; }
         public ChatViewModel ChatWinodw { get; set; }
         public MessageDispatcher Dispatcher { get; set; }
@@ -27,7 +28,7 @@ namespace BackgammonProject.Services
             new MessageDispatcher(this);
         }
 
-        public static AppContext get()
+        public static AppContext Get()
         {
             if (self == null)
             {

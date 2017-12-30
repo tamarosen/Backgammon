@@ -2,10 +2,10 @@
 
 namespace BackgammonProject.Models
 {
-    class ChatRequest : AbstractXmlSerializable
+    class Login : AbstractXmlSerializable
     {
-        public string From { get; set; }
-        public string To { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
 
         public override bool FromXml(XElement xmlElement)
         {
@@ -13,8 +13,8 @@ namespace BackgammonProject.Models
             {
                 return false;
             }
-            this.From = xmlElement.Element("From").Value;
-            this.To = xmlElement.Element("To").Value;
+            this.Name = xmlElement.Element("Name").Value;
+            this.Password = xmlElement.Element("Password").Value;
             return true;
         }
 
@@ -22,8 +22,8 @@ namespace BackgammonProject.Models
         {
             XElement serialized = new XElement(GetStringType(),
                 new XElement("Type", GetStringType()),
-                new XElement("From", From),
-                new XElement("To", To));
+                new XElement("Name", Name),
+                new XElement("Password", Password));
             return serialized;
         }
     }

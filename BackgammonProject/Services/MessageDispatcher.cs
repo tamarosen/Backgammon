@@ -1,5 +1,6 @@
 ﻿using BackgammonProject.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -30,9 +31,9 @@ namespace BackgammonProject.Services
 
             try
             {
-                connectTask = context.MyWebSocket.ConnectAsync(new Uri("ws://localhost:36453")).AsTask();
-                connectTask.ContinueWith(_ => SendMessageUsingMessageWebSocketAsync(ModelXmlMapper.GetAsXmlString(new User(context.CurrentUser))));
-                // connectTask.Wait();
+                Login login = new Login { Name = context.CurrentUser.Name, Password = context.CurrentUser.Password };
+                connectTask = context.MyWebSocket.ConnectAsync(new Uri("ws://localhost:8123")).AsTask();
+                connectTask.ContinueWith(_ => SendMessageUsingMessageWebSocketAsync(ModelXmlMapper.GetAsXmlString(login)));
             }
             catch (Exception ex)
             {
@@ -65,6 +66,12 @@ namespace BackgammonProject.Services
             await connectTask.ContinueWith(_ => SendMessageUsingMessageWebSocketAsync(serialized));
         }
 
+        public async void SendListAsync(IList<AbstractXmlSerializable> list)
+        {
+            string serialized = ModelXmlMapper.GetAsXmlString(list);
+            await connectTask.ContinueWith(_ => SendMessageUsingMessageWebSocketAsync(serialized));
+        }
+
         private void WebSocket_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
         {
             string serialized = "";
@@ -93,7 +100,7 @@ namespace BackgammonProject.Services
             context.MyWebSocket = null;
         }
 
-        public async void DispatchMessage(string serialized)
+        public void DispatchMessage(string serialized)
         {
             XDocument xmlDoc = null;
             try
@@ -101,12 +108,39 @@ namespace BackgammonProject.Services
                 xmlDoc = XDocument.Parse(serialized);
             } catch (Exception ex)
             {
+                Debug.WriteLine(ex.StackTrace);
                 return;
             }
 
+            // First check if we got array:
+            if (xmlDoc.Root.Name.Equals("Array"))
+            {
+                IList<AbstractXmlSerializable> list = new List<AbstractXmlSerializable>();
+                XElement first = (XElement)xmlDoc.FirstNode;
+                string typeInList = first == null ? "Undefined" : first.Element("Type").Value;
+                foreach (var elem in xmlDoc.Root.Elements())
+                {
+                    list.Add(ModelXmlMapper.FromXmlString(elem.ToString()));
+                }
+
+                DispatchListMsg(list, typeInList);
+            }
+            else
+            {
+                DispatchSingleObjectMsg(xmlDoc.Root);
+            }
+        }
+
+        private void DispatchListMsg(IList<AbstractXmlSerializable> list, string typeInList)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void DispatchSingleObjectMsg(XElement xmlObj)
+        {
             // initially assume the recieved message is of type Message:
             Message msg = new Message();
-            if (msg.FromXml(xmlDoc.Root))
+            if (msg.FromXml(xmlObj))
             {
                 string message = msg.From + ": " + msg.Content;
                 await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(

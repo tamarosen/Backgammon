@@ -37,22 +37,23 @@ namespace BackgammonProject.ViewModel
         #region Constructor
         public ChatViewModel()
         {
-            AppContext ctx = AppContext.get();
+            AppContext ctx = AppContext.Get();
             ctx.ChatWinodw = this;
             
             // temporary code, to replace login window:
-            ctx.CurrentUser = "anonymous";
+            ctx.CurrentUser = new User{ Name = "anonymous", Password = "noPass" };
             ctx.Dispatcher.EstablishConnection();
             // end of temporary code
 
             HistoryContent = new ObservableCollection<string>();
             SendCommand = new RelayCommand( () =>
             {
-                Message msg = new Message();
-                msg.From = ctx.CurrentUser;
-                msg.Content = MyMessage;
-                msg.To = "Roni";
-
+                Message msg = new Message()
+                {
+                    From = ctx.CurrentUser.Name,
+                    Content = MyMessage,
+                    To = "Roni"
+                };
                 SendMessage(msg);
 
                 MyMessage = string.Empty;
@@ -72,7 +73,7 @@ namespace BackgammonProject.ViewModel
 
         public void SendMessage(Message msg)
         {
-            AppContext.get().Dispatcher.SendObjectAsync(msg);
+            AppContext.Get().Dispatcher.SendObjectAsync(msg);
         }
 
         #endregion

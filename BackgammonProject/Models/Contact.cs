@@ -13,7 +13,7 @@ namespace BackgammonProject.Models
 
         public override bool FromXml(XElement xmlElement)
         {
-            if (!valid(xmlElement))
+            if (!Valid(xmlElement))
             {
                 return false;
             }

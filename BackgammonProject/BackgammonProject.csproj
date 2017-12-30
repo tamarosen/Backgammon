@@ -19,6 +19,7 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>BackgammonProject_TemporaryKey.pfx</PackageCertificateKeyFile>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
+    <PackageCertificateThumbprint>52F44313934FAF9938A19D861E8FF08DCD4ABD53</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +97,8 @@
     <Compile Include="Converters\StateColorConverter.cs" />
     <Compile Include="Infra\IChatService.cs" />
     <Compile Include="Infra\ILoginService.cs" />
+    <Compile Include="Models\LoginResponse.cs" />
+    <Compile Include="Models\Login.cs" />
     <Compile Include="Models\ChatRequest.cs" />
     <Compile Include="Models\ChatRequestResponse.cs" />
     <Compile Include="Models\AbstractXmlSerializable.cs" />

@@ -20,7 +20,7 @@ namespace BackgammonProject.Models
             return GetStringType(GetType());
         }
 
-        public bool valid(XElement xmlElement)
+        public bool Valid(XElement xmlElement)
         {
             XElement t = xmlElement.Element("Type");
             if (t == null || !t.Value.Equals(GetStringType()))

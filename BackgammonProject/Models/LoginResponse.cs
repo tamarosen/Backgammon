@@ -1,11 +1,12 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 
 namespace BackgammonProject.Models
 {
-    class ChatRequest : AbstractXmlSerializable
+    class LoginResponse: AbstractXmlSerializable
     {
-        public string From { get; set; }
-        public string To { get; set; }
+        public bool Success { get; set; }
+        public string ErrorMessage { get; set; }
 
         public override bool FromXml(XElement xmlElement)
         {
@@ -13,8 +14,8 @@ namespace BackgammonProject.Models
             {
                 return false;
             }
-            this.From = xmlElement.Element("From").Value;
-            this.To = xmlElement.Element("To").Value;
+            this.Success = Boolean.Parse(xmlElement.Element("Success").Value);
+            this.ErrorMessage = xmlElement.Element("ErrorMessage").Value;
             return true;
         }
 
@@ -22,8 +23,8 @@ namespace BackgammonProject.Models
         {
             XElement serialized = new XElement(GetStringType(),
                 new XElement("Type", GetStringType()),
-                new XElement("From", From),
-                new XElement("To", To));
+                new XElement("Success", Success.ToString()),
+                new XElement("ErrorMessage", ErrorMessage));
             return serialized;
         }
     }
