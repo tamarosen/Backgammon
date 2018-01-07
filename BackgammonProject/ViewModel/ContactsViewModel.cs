@@ -1,4 +1,5 @@
 ﻿using BackgammonProject.Models;
+using BackgammonProject.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
@@ -19,45 +20,58 @@ namespace BackgammonProject.ViewModel
 #endregion
 
 #region Commands
-        public ICommand ChatCommand { get; set; }
-        //add game command later
+        public ICommand StartChat { get; set; }
 #endregion
 
 #region Properties
-        public User CurrentUser { get; set; }
-        public Contact SelectedContact { get; set; } //need to add binding to selected contact somehow
-        public List<Contact> Contacts { get; set; }
-        public List<Contact> OnlineContacts { get; set; }
-        public List<Contact> OfflineContacts { get; set; }
+        public string CurrentUserName { get; set; }
+        public string SelectedItem { get; set; } //need to add binding to selected contact somehow
+        public List<string> OnlineContacts { get; set; }
+        public List<string> OfflineContacts { get; set; }
 #endregion
 
 #region Constructor        
-        public ContactsViewModel(List<Contact> contacts, INavigationService navigationService, IDialogService dialogService)
+        public ContactsViewModel(IDialogService dialogService, INavigationService navigationService)
         {
             _navigationService = navigationService;
             _dialogService = dialogService;
 
-            Contacts = contacts;
-            OnlineContacts = new List<Contact>();
-            OfflineContacts = new List<Contact>();
+            OnlineContacts = new List<string>();
+            OfflineContacts = new List<string>();
+            TalkBackAppContext ctx = TalkBackAppContext.Get();
+            ctx.ContactsWindow = this;
 
-            foreach (var contact in Contacts)
+            foreach (var contact in ctx.Contacts)
             {
-                if (contact.IsOnline)
-                    OnlineContacts.Add(contact);
+                if (contact.Value)
+                    OnlineContacts.Add(contact.Key);
                 else
-                    OfflineContacts.Add(contact);
+                    OfflineContacts.Add(contact.Key);
             }
 
-            ChatCommand = new RelayCommand(() =>
+            StartChat = new RelayCommand(() =>
             {
-                if (SelectedContact == null)
+                if (SelectedItem == null)
                     _dialogService.ShowMessageBox("You must select a contact to chat with.", "Error");
                 else
-                    _navigationService.NavigateTo("ChatPage");
-                _navigationService.NavigateTo("ChatPage");
+                    _navigationService.NavigateTo("ChatPage", SelectedItem);
             });
 #endregion
+        }
+
+        public void OnContactUpdate(Contact contact)
+        {
+            if (contact.IsOnline)
+            {
+                OfflineContacts.Remove(contact.Name);
+                OnlineContacts.Add(contact.Name);
+            }
+            else
+            {
+                OnlineContacts.Remove(contact.Name);
+                OfflineContacts.Add(contact.Name);
+
+            }
         }
     }
 }

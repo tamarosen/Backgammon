@@ -13,10 +13,10 @@ namespace BackgammonProject.Services
 {
     class MessageDispatcher
     {
-        private AppContext context;
+        private TalkBackAppContext context;
         private Task connectTask;
 
-        public MessageDispatcher(AppContext context)
+        public MessageDispatcher(TalkBackAppContext context)
         {
             this.context = context;
             this.context.Dispatcher = this;
@@ -33,8 +33,7 @@ namespace BackgammonProject.Services
             try
             {
                 Login login = new Login { Name = context.CurrentUser.Name, Password = context.CurrentUser.Password };
-                connectTask = context.MyWebSocket.ConnectAsync(new Uri("ws://localhost:8123")).AsTask();
-                connectTask.ContinueWith(_ => SendMessageUsingMessageWebSocketAsync(ModelXmlMapper.GetAsXmlString(login)));
+                connectTask = context.MyWebSocket.ConnectAsync(new Uri("ws:/localhost:8123")).AsTask();
             }
             catch (Exception ex)
             {
@@ -107,7 +106,8 @@ namespace BackgammonProject.Services
             try
             {
                 xmlDoc = XDocument.Parse(serialized);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.StackTrace);
                 return;
@@ -125,41 +125,110 @@ namespace BackgammonProject.Services
             }
         }
 
-        private void DispatchListMsg(XElement xmlList)
+        private async void DispatchListMsg(XElement xmlList)
         {
-            ModelXmlMapper.MappedType typeInList = ModelXmlMapper.MappedType.UNDEFINED;
             XElement first = (XElement)xmlList.FirstNode;
+            ModelXmlMapper.MappedType typeInList = GetMappedType(first);
+
+            IList<AbstractXmlSerializable> list = ModelXmlMapper.FromArrayXml(xmlList);
+
+            switch (typeInList)
+            {
+                case ModelXmlMapper.MappedType.CONTACT:
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                        CoreDispatcherPriority.Normal,
+                        () =>
+                        {
+                            context.LoginWindow.OnContactsListReceived(list);
+                        }
+                    );
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
+        }
+
+        private static ModelXmlMapper.MappedType GetMappedType(XElement first)
+        {
+            ModelXmlMapper.MappedType typeInElement = ModelXmlMapper.MappedType.UNDEFINED;
             if (first != null)
             {
                 XElement firstElementType = first.Element("Type");
                 if (firstElementType != null)
                 {
-                    if (ModelXmlMapper.map.TryGetValue(firstElementType.Value, out typeInList))
+                    if (ModelXmlMapper.map.TryGetValue(firstElementType.Value, out typeInElement))
                     {
-                        typeInList = ModelXmlMapper.MappedType.UNDEFINED;
+                        typeInElement = ModelXmlMapper.MappedType.UNDEFINED;
                     }
                 }
             }
 
-            IList<AbstractXmlSerializable> list = ModelXmlMapper.FromArrayXml(xmlList);
-
-            // continue with dispatching code...
+            return typeInElement;
         }
 
         private async void DispatchSingleObjectMsg(XElement xmlObj)
         {
-            // initially assume the recieved message is of type Message:
-            Message msg = new Message();
-            if (msg.FromXml(xmlObj))
+            ModelXmlMapper.MappedType typeInElement = GetMappedType(xmlObj);
+
+            switch (typeInElement)
             {
-                string message = msg.From + ": " + msg.Content;
-                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
-                    CoreDispatcherPriority.Normal,
-                    () =>
+                case ModelXmlMapper.MappedType.MESSAGE:
+                    Message msg = new Message();
+                    if (msg.FromXml(xmlObj))
                     {
-                        context.ChatWinodw.MessageReceived(message);
+                        string message = msg.From + ": " + msg.Content;
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                            CoreDispatcherPriority.Normal,
+                            () =>
+                            {
+                                context.ChatWinodw.MessageReceived(message);
+                            }
+                        );
                     }
-                );
+                    break;
+                case ModelXmlMapper.MappedType.CHAT_REQUEST_RESPONSE:
+                    ChatRequestResponse resp = new ChatRequestResponse();
+                    if (resp.FromXml(xmlObj))
+                    {
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                            CoreDispatcherPriority.Normal,
+                            () =>
+                            {
+                                context.ChatWinodw.Disconnected(resp);
+                            }
+                        );
+                    }
+                    break;
+                case ModelXmlMapper.MappedType.LOGIN_RESPONSE:
+                    LoginResponse loginResp = new LoginResponse();
+                    if (loginResp.FromXml(xmlObj))
+                    {
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                            CoreDispatcherPriority.Normal,
+                            () =>
+                            {
+                                context.LoginWindow.OnLoginResponse(loginResp);
+                            }
+                        );
+                    }
+                    break;
+                case ModelXmlMapper.MappedType.CONTACT:
+                    Contact contact = new Contact();
+                    if (contact.FromXml(xmlObj))
+                    {
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                            CoreDispatcherPriority.Normal,
+                            () =>
+                            {
+                                context.ContactsWindow.OnContactUpdate(contact);
+                            }
+                        );
+                    }
+                    break;
+                default:
+                    // do nothing
+                    break;
             }
         }
     }

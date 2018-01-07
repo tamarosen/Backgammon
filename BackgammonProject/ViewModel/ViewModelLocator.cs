@@ -30,13 +30,13 @@ namespace BackgammonProject.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             //ViewModels
-            SimpleIoc.Default.Register<LoginViewModel>();
+            SimpleIoc.Default.Register<LoginViewModel>(true);
             SimpleIoc.Default.Register<ContactsViewModel>();
-            SimpleIoc.Default.Register<ChatViewModel>(true);
+            SimpleIoc.Default.Register<ChatViewModel>();
 
             //Services
             SimpleIoc.Default.Register<INavigationService>(() => nav);
-            //SimpleIoc.Default.Register<IDialogService>();
+            SimpleIoc.Default.Register<IDialogService>();
             //SimpleIoc.Default.Register<ILoginService, MockupLoginService>();
         }
 

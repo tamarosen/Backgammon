@@ -21,9 +21,9 @@
         <TextBlock Name="Title" Text="Shlook TalkBack" FontSize="60" HorizontalAlignment="Center" Grid.Row="0"/>
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Center"> <!--Space="20"-->
-            <TextBlock Name="userName" Text="Temporary UserName" FontSize="70"/>
+            <TextBlock Name="userName" Text="{Binding CurrentUserName}" FontSize="70"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> <!--Space="20"-->
-                <Button Name="chatBtn" Content="chat image" FontSize="40"/>
+                <Button Name="chatBtn" Content="chat image" Command="{Binding StartChat}" FontSize="40"/>
                 <Button Name="gameBtn" Content="game image" FontSize="40"/>
             </StackPanel>
         </StackPanel>
@@ -31,12 +31,12 @@
         <StackPanel Grid.Row="2">
             <TextBlock Name="onlineContacts" Text="Online contacts:" FontSize="50"/>
             <!--<ListBox Name="onlineList" ItemsSource="{Binding Contacts}" ItemTemplate="{StaticResource ContactsDataTemplate}"/>-->
-            <ListBox Name="onlineList" ItemsSource="{Binding OnlineContacts}">
+            <ListBox Name="onlineList" ItemsSource="{Binding OnlineContacts}" SelectionMode="Single" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <Ellipse Width="20" Height="20" Fill="Green"/>
-                            <TextBlock Text="{Binding OnlineContacts.Name}" FontSize="20"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="20" Height="20" Fill="Green" Margin="0,0,20,0"/>
+                            <TextBlock Text="{Binding}" FontSize="20"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -49,9 +49,9 @@
             <ListBox Name="offlineList" ItemsSource="{Binding OfflineContacts}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <Ellipse Width="20" Height="20" Fill="Orange"/>
-                            <TextBlock Text="{Binding OfflineContacts.Name}" FontSize="20"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="20" Height="20" Fill="Orange" Margin="0,0,20,0"/>
+                            <TextBlock Text="{Binding}" FontSize="20"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

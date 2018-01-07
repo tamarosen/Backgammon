@@ -11,9 +11,10 @@ namespace BackgammonProject.Services
     public class MockupLoginService : ILoginService
     {
         private IList<User> users;
+
         private MockupLoginService()
         {
-            //Get all users from DB
+            //Gets all users from DB
             users = new List<User>()
             {
                 new User(){ Name="tamar", Password="123456"},
@@ -54,7 +55,7 @@ namespace BackgammonProject.Services
             users.Add(new User { Name = user.Name, Password = user.Password });
         }
 
-        public IList<Contact> GetAllContacts()
+        public void LogIn(User user)
         {
             throw new NotImplementedException();
         }

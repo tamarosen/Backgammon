@@ -9,6 +9,7 @@ namespace BackgammonProject.Infra
 {
     public interface ILoginService
     {
-        IList<Contact> GetAllContacts(User user);
+        void LogIn(User user); //CheckUserInput in service side
+        //IList<Contact> GetAllContacts(); in server side
     }
 }

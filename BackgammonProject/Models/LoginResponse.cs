@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace BackgammonProject.Models
 {
-    class LoginResponse: AbstractXmlSerializable
+    public class LoginResponse: AbstractXmlSerializable
     {
         public bool Success { get; set; }
         public string ErrorMessage { get; set; }

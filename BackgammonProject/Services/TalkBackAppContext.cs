@@ -1,6 +1,8 @@
 ﻿using BackgammonProject.Models;
 using BackgammonProject.ViewModel;
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,30 +11,35 @@ using Windows.Networking.Sockets;
 
 namespace BackgammonProject.Services
 {
-    class AppContext
+    class TalkBackAppContext
     {
         // singleton
-        public static AppContext self = null;
+        public static TalkBackAppContext self = null;
 
         public User CurrentUser { get; set; }
         public MessageWebSocket MyWebSocket { get; set; }
         public ChatViewModel ChatWinodw { get; set; }
         public MessageDispatcher Dispatcher { get; set; }
+        public LoginViewModel LoginWindow { get; set; }
+        public ConcurrentDictionary<string, bool> Contacts { get; set; }
+        public ContactsViewModel ContactsWindow { get; set; }
 
         // singleton
-        private AppContext()
+        private TalkBackAppContext()
         {
             CurrentUser = null;
             MyWebSocket = null;
             ChatWinodw = null;
+            LoginWindow = null;
+            Contacts = new ConcurrentDictionary<string, bool>();
             new MessageDispatcher(this);
         }
 
-        public static AppContext Get()
+        public static TalkBackAppContext Get()
         {
             if (self == null)
             {
-                self = new AppContext(); 
+                self = new TalkBackAppContext(); 
             }
             return self;
         }

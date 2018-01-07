@@ -26,8 +26,8 @@
         </StackPanel>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Center">
-            <TextBox Name="userName" Text="{Binding CurrentUser.Name}" PlaceholderText="User name" FontSize="50" Foreground="Black"/>
-            <PasswordBox Name="password" PlaceholderText="Password" FontSize="50" Foreground="Black"/>
+            <TextBox Name="userName" Text="{Binding CurrentUser.Name, Mode=TwoWay}" PlaceholderText="User name" FontSize="50" Foreground="Black"/>
+            <PasswordBox Name="password" Password="{Binding CurrentUser.Password, Mode=TwoWay}" PlaceholderText="Password" FontSize="50" Foreground="Black"/>
             <Button Name="signInBtn" Command="{Binding LoginCommand}" Content="Sign in" FontSize="70" HorizontalAlignment="Center" Foreground="Black" Margin="50"/>
         </StackPanel>
         

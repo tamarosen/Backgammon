@@ -21,7 +21,11 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="chat with user name" FontSize="60" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center">
+            <TextBlock Text="Chat with   " FontSize="60"/>
+            <TextBlock Text="{Binding PeerUserName}" FontSize="60"/>
+        </StackPanel>
+
 
         <ListBox Name="chatHistory" ItemsSource="{Binding HistoryContent}" Grid.Column="0" Grid.Row="1"/>
 

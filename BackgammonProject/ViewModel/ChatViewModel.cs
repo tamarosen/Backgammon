@@ -2,6 +2,7 @@
 using BackgammonProject.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -9,33 +10,22 @@ namespace BackgammonProject.ViewModel
 {
     public class ChatViewModel : ViewModelBase
     {
-        #region Properties
-
         //public User CurrentUser { get; set; }
         //public Contact ChatContact { get; set; }
         //public Message MessageContent { get; set; }
 
         public ObservableCollection<string> HistoryContent { get; set; }
         public string MyMessage { get; set; }
-        #endregion
-
-        #region Commands
+        public string PeerUserName { get; set; }
 
         public ICommand SendCommand { get; set; }
 
-        #endregion
 
-        #region Constructor
-        public ChatViewModel()
+        public ChatViewModel(string peerUserName)
         {
-            AppContext ctx = AppContext.Get();
+            TalkBackAppContext ctx = TalkBackAppContext.Get();
             ctx.ChatWinodw = this;
             
-            // temporary code, to replace login window:
-            ctx.CurrentUser = new User{ Name = "anonymous", Password = "noPass" };
-            ctx.Dispatcher.EstablishConnection();
-            // end of temporary code
-
             HistoryContent = new ObservableCollection<string>();
             SendCommand = new RelayCommand( () =>
             {
@@ -43,7 +33,7 @@ namespace BackgammonProject.ViewModel
                 {
                     From = ctx.CurrentUser.Name,
                     Content = MyMessage,
-                    To = "Roni"
+                    To = PeerUserName
                 };
                 SendMessage(msg);
 
@@ -51,10 +41,7 @@ namespace BackgammonProject.ViewModel
                 RaisePropertyChanged(nameof(MyMessage));
             });
         }
-
-        #endregion
-
-        #region Methods
+        
 
         public void MessageReceived(string message)
         {
@@ -64,10 +51,12 @@ namespace BackgammonProject.ViewModel
 
         public void SendMessage(Message msg)
         {
-            AppContext.Get().Dispatcher.SendObjectAsync(msg);
+            TalkBackAppContext.Get().Dispatcher.SendObjectAsync(msg);
         }
 
-        #endregion
+        internal void Disconnected(ChatRequestResponse resp)
+        {
+        }
     }
 }
 
