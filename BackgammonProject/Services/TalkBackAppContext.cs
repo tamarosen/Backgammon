@@ -16,13 +16,14 @@ namespace BackgammonProject.Services
         // singleton
         public static TalkBackAppContext self = null;
 
-        public User CurrentUser { get; set; }
+        public UserModel CurrentUser { get; set; }
         public MessageWebSocket MyWebSocket { get; set; }
         public ChatViewModel ChatWinodw { get; set; }
         public MessageDispatcher Dispatcher { get; set; }
         public LoginViewModel LoginWindow { get; set; }
         public ConcurrentDictionary<string, bool> Contacts { get; set; }
         public ContactsViewModel ContactsWindow { get; set; }
+        public string PeerUserName { get; internal set; }
 
         // singleton
         private TalkBackAppContext()

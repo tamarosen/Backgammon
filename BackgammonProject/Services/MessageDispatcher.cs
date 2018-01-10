@@ -22,8 +22,13 @@ namespace BackgammonProject.Services
             this.context.Dispatcher = this;
         }
 
-        public void EstablishConnection()
+        public async void EstablishConnectionAsync()
         {
+            while (context.MyWebSocket != null)
+            {
+                await Task.Delay(1000);
+
+            }
             context.MyWebSocket = new MessageWebSocket();
 
             context.MyWebSocket.Control.MessageType = SocketMessageType.Utf8;
@@ -32,13 +37,11 @@ namespace BackgammonProject.Services
 
             try
             {
-                Login login = new Login { Name = context.CurrentUser.Name, Password = context.CurrentUser.Password };
-                connectTask = context.MyWebSocket.ConnectAsync(new Uri("ws:/localhost:8123")).AsTask();
+                connectTask = context.MyWebSocket.ConnectAsync(new Uri("ws://localhost:8123")).AsTask();
             }
             catch (Exception ex)
             {
                 Windows.Web.WebErrorStatus webErrorStatus = WebSocketError.GetStatus(ex.GetBaseException().HResult);
-                // Add additional code here to handle exceptions.
             }
         }
 
@@ -96,8 +99,11 @@ namespace BackgammonProject.Services
         private void WebSocket_Closed(IWebSocket sender, WebSocketClosedEventArgs args)
         {
             Debug.WriteLine("WebSocket_Closed; Code: " + args.Code + ", Reason: \"" + args.Reason + "\"");
-            context.MyWebSocket.Dispose();
-            context.MyWebSocket = null;
+            if (context.MyWebSocket != null)
+            {
+                context.MyWebSocket.Dispose();
+                context.MyWebSocket = null;
+            }
         }
 
         public void DispatchMessage(string serialized)
@@ -114,7 +120,7 @@ namespace BackgammonProject.Services
             }
 
             // First check if we got array:
-            if (xmlDoc.Root.Name.Equals("Array"))
+            if (xmlDoc.Root.Name.LocalName.Equals("Array"))
             {
 
                 DispatchListMsg(xmlDoc.Root);
@@ -134,6 +140,7 @@ namespace BackgammonProject.Services
 
             switch (typeInList)
             {
+                case ModelXmlMapper.MappedType.UNDEFINED:
                 case ModelXmlMapper.MappedType.CONTACT:
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
                         CoreDispatcherPriority.Normal,
@@ -157,7 +164,7 @@ namespace BackgammonProject.Services
                 XElement firstElementType = first.Element("Type");
                 if (firstElementType != null)
                 {
-                    if (ModelXmlMapper.map.TryGetValue(firstElementType.Value, out typeInElement))
+                    if (!ModelXmlMapper.map.TryGetValue(firstElementType.Value, out typeInElement))
                     {
                         typeInElement = ModelXmlMapper.MappedType.UNDEFINED;
                     }
@@ -174,7 +181,7 @@ namespace BackgammonProject.Services
             switch (typeInElement)
             {
                 case ModelXmlMapper.MappedType.MESSAGE:
-                    Message msg = new Message();
+                    MessageModel msg = new MessageModel();
                     if (msg.FromXml(xmlObj))
                     {
                         string message = msg.From + ": " + msg.Content;
@@ -187,6 +194,20 @@ namespace BackgammonProject.Services
                         );
                     }
                     break;
+                case ModelXmlMapper.MappedType.CHAT_REQUEST:
+                    ChatRequest req = new ChatRequest();
+                    if (req.FromXml(xmlObj))
+                    {
+                        // TODO: check if ongoing chat and return failure from here:
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                            CoreDispatcherPriority.Normal,
+                            () =>
+                            {
+                                context.ContactsWindow.ChatRequestReceived(req);
+                            }
+                        );
+                    }
+                    break;
                 case ModelXmlMapper.MappedType.CHAT_REQUEST_RESPONSE:
                     ChatRequestResponse resp = new ChatRequestResponse();
                     if (resp.FromXml(xmlObj))
@@ -195,7 +216,8 @@ namespace BackgammonProject.Services
                             CoreDispatcherPriority.Normal,
                             () =>
                             {
-                                context.ChatWinodw.Disconnected(resp);
+                                context.ContactsWindow.ChatResponseReceived(resp);
+                                // context.ChatWinodw.Disconnected(resp);
                             }
                         );
                     }
@@ -208,7 +230,7 @@ namespace BackgammonProject.Services
                             CoreDispatcherPriority.Normal,
                             () =>
                             {
-                                context.LoginWindow.OnLoginResponse(loginResp);
+                                context.LoginWindow.OnLoginResponseAsync(loginResp);
                             }
                         );
                     }
@@ -221,7 +243,8 @@ namespace BackgammonProject.Services
                             CoreDispatcherPriority.Normal,
                             () =>
                             {
-                                context.ContactsWindow.OnContactUpdate(contact);
+                                if (context.ContactsWindow != null)
+                                    context.ContactsWindow.OnContactUpdate(contact);
                             }
                         );
                     }

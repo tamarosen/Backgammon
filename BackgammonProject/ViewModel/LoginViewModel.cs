@@ -1,5 +1,4 @@
-﻿using BackgammonProject.Infra;
-using BackgammonProject.Services;
+﻿using BackgammonProject.Services;
 using BackgammonProject.Models;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.Concurrent;
+using Windows.UI.Xaml;
 
 namespace BackgammonProject.ViewModel
 {
@@ -21,19 +21,20 @@ namespace BackgammonProject.ViewModel
         private readonly INavigationService _navigationService;
         public ICommand LoginCommand { get; set; }
 
-        public User CurrentUser { get; set; }
+        public UserModel CurrentUser { get; set; }
+
+        private TalkBackAppContext ctx;
 
         public LoginViewModel(IDialogService dialogService, INavigationService navigationService)
         {
-            Services.TalkBackAppContext ctx = Services.TalkBackAppContext.Get();
-            CurrentUser = new User();
+            ctx = TalkBackAppContext.Get();
+            CurrentUser = new UserModel();
 
             // _loginService = loginService;
             _dialogService = dialogService;
             _navigationService = navigationService;
 
-            ctx.CurrentUser = CurrentUser;
-            ctx.Dispatcher.EstablishConnection();
+            ctx.Dispatcher.EstablishConnectionAsync();
             ctx.LoginWindow = this;
 
             LoginCommand = new RelayCommand(() =>
@@ -58,17 +59,18 @@ namespace BackgammonProject.ViewModel
         private void TryLogin()
         {
             Login login = new Login { Name = CurrentUser.Name, Password = CurrentUser.Password };
-            TalkBackAppContext.Get().Dispatcher.SendObjectAsync(login);
+            ctx.Dispatcher.SendObjectAsync(login);
         }
 
-        public void OnLoginResponse(LoginResponse resp)
+        public async Task OnLoginResponseAsync(LoginResponse resp)
         {
-
+            await _dialogService.ShowMessageBox($"Eror: {resp.ErrorMessage}", "Error");
         }
 
         public void OnContactsListReceived(IList<AbstractXmlSerializable> items)
         {
-            ConcurrentDictionary<string, bool> contacts = TalkBackAppContext.Get().Contacts;
+            ConcurrentDictionary<string, bool> contacts = ctx.Contacts;
+            ctx.CurrentUser = CurrentUser;
             foreach (AbstractXmlSerializable item in items)
             {
                 Contact contact = (Contact) item;
@@ -78,7 +80,8 @@ namespace BackgammonProject.ViewModel
                 }
             }
 
-            _navigationService.NavigateTo(typeof(ContactsPage).ToString(), null);
+            _navigationService.NavigateTo(ViewModelLocator.ContactsPageKey);
+            Window.Current.Activate();
         }
     }
 }

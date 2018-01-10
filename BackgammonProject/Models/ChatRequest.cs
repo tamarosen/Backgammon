@@ -2,7 +2,7 @@
 
 namespace BackgammonProject.Models
 {
-    class ChatRequest : AbstractXmlSerializable
+    public class ChatRequest : AbstractXmlSerializable
     {
         public string From { get; set; }
         public string To { get; set; }

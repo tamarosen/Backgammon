@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace BackgammonProject.Models
 {
-    public class User : AbstractXmlSerializable, INotifyPropertyChanged
+    public class UserModel : AbstractXmlSerializable, INotifyPropertyChanged
     {
         public string Name { get; set; }
         public string Password { get; set; }

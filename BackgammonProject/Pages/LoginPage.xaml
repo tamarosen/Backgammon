@@ -8,28 +8,28 @@
     mc:Ignorable="d"
     DataContext="{Binding Source={StaticResource Locator},Path=LoginVM}">
 
-    <Grid Background="White">
-        
+    <Grid Background="#e6ecff">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
-               
-        <Button Name="menu" Content="▼" FontSize="60" VerticalAlignment="Top" Grid.Row="0"/>
-        <TextBlock Name="title" Text="Shlook TalkBack" FontSize="60" HorizontalAlignment="Center" Grid.Row="0"/>
+
+        <!--Button Name="menu" Content="▼" FontSize="20" VerticalAlignment="Top" Grid.Row="0" Click="menu_Click" Height="42" Width="42"/-->
+        <TextBlock Name="title" Text="Shlook TalkBack" FontSize="20" HorizontalAlignment="Center" Grid.Row="0" FontFamily="Century Gothic"/>
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Center">
-            <TextBlock Name="header1" Text="Welcome to" FontSize="70" HorizontalAlignment="Center" Foreground="Black"/>
-            <TextBlock Name="header2" Text="Shlook TalkBack" FontSize="100" Foreground="Black"/>
-            <TextBlock Name="header3" Text="Messanger" FontSize="70" HorizontalAlignment="Center" Foreground="Black"/>
+            <TextBlock Name="header1" Text="Welcome to" FontSize="24" HorizontalAlignment="Center" Foreground="Black" FontFamily="Century Gothic"/>
+            <TextBlock Name="header2" Text="Shlook TalkBack" FontSize="32" Foreground="Black" FontFamily="Century Gothic" FontWeight="Bold"/>
+            <TextBlock Name="header3" Text="Messanger" FontSize="24" HorizontalAlignment="Center" Foreground="Black" FontFamily="Century Gothic"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Center">
-            <TextBox Name="userName" Text="{Binding CurrentUser.Name, Mode=TwoWay}" PlaceholderText="User name" FontSize="50" Foreground="Black"/>
-            <PasswordBox Name="password" Password="{Binding CurrentUser.Password, Mode=TwoWay}" PlaceholderText="Password" FontSize="50" Foreground="Black"/>
-            <Button Name="signInBtn" Command="{Binding LoginCommand}" Content="Sign in" FontSize="70" HorizontalAlignment="Center" Foreground="Black" Margin="50"/>
+            <TextBox Name="userName" Text="{Binding CurrentUser.Name, Mode=TwoWay}" PlaceholderText="User name" FontSize="18" Foreground="Black"/>
+            <PasswordBox Name="password" Password="{Binding CurrentUser.Password, Mode=TwoWay}" PlaceholderText="Password" FontSize="18" Foreground="Black"/>
+            <Button Name="signInBtn" Command="{Binding LoginCommand}" Content="Sign in" FontSize="20" HorizontalAlignment="Center" Foreground="White" Margin="50" Background="#3366ff" FontFamily="Century Gothic" FontWeight="Bold"/>
         </StackPanel>
-        
+
     </Grid>
 </Page>

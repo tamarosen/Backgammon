@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     DataContext="{Binding Source={StaticResource Locator},Path=ChatVM}">
 
-    <Grid Background="White">
+    <Grid Background="#e6ecff">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -22,18 +22,17 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center">
-            <TextBlock Text="Chat with   " FontSize="60"/>
-            <TextBlock Text="{Binding PeerUserName}" FontSize="60"/>
+            <TextBlock Text="Chat with" FontSize="60" Margin="10" FontFamily="Century Gothic"/>
+            <TextBlock Text="{Binding PeerUserName}" FontSize="60" Margin="10" FontFamily="Century Gothic"/>
         </StackPanel>
 
+        <Button Name="Back" Content="Back" Command="{Binding BackCommand}" Grid.Column="1" Grid.Row="0" FontSize="40" HorizontalAlignment="Center" Background="#3366ff" Foreground="White" FontWeight="Bold"/>
 
         <ListBox Name="chatHistory" ItemsSource="{Binding HistoryContent}" Grid.Column="0" Grid.Row="1"/>
 
-        <Button Name="gameBtn" Content="Game image" Grid.Column="1" Grid.Row="1" FontSize="40" HorizontalAlignment="Center"/>
-
         <TextBox Name="messageContent" Text="{Binding MyMessage, Mode=TwoWay}" Grid.Column="0" Grid.Row="2" AcceptsReturn="True" BorderBrush="CadetBlue" BorderThickness="5"/>
 
-        <Button Name="sendBtn" Content="Send" Command="{Binding SendCommand}" Grid.Column="1" Grid.Row="2" FontSize="40" HorizontalAlignment="Center"/>
+        <Button Name="sendBtn" Content="Send" Command="{Binding SendCommand}" Grid.Column="1" Grid.Row="2" FontSize="40" HorizontalAlignment="Center" Foreground="White" Background="#3366ff" FontFamily="Century Gothic" FontWeight="Bold"/>
 
     </Grid>
 </Page>

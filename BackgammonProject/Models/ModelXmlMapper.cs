@@ -20,9 +20,9 @@ namespace BackgammonProject.Models
 
         static public IDictionary<string, MappedType> map = new Dictionary<string, MappedType>
         {
-            { AbstractXmlSerializable.GetStringType(typeof(Message)), MappedType.MESSAGE },
+            { AbstractXmlSerializable.GetStringType(typeof(MessageModel)), MappedType.MESSAGE },
             { AbstractXmlSerializable.GetStringType(typeof(Contact)), MappedType.CONTACT },
-            { AbstractXmlSerializable.GetStringType(typeof(User)), MappedType.USER },
+            { AbstractXmlSerializable.GetStringType(typeof(UserModel)), MappedType.USER },
             { AbstractXmlSerializable.GetStringType(typeof(ChatRequest)), MappedType.CHAT_REQUEST },
             { AbstractXmlSerializable.GetStringType(typeof(ChatRequestResponse)), MappedType.CHAT_REQUEST_RESPONSE },
             { AbstractXmlSerializable.GetStringType(typeof(Login)), MappedType.LOGIN },
@@ -32,8 +32,8 @@ namespace BackgammonProject.Models
         public static AbstractXmlSerializable FromXmlString(string xmlDoc)
         {
             MappedType t = MappedType.UNDEFINED;
-            XDocument serialized = XDocument.Load(xmlDoc);
-            XElement typeElement = serialized.Element("Type");
+            XDocument serialized = XDocument.Parse(xmlDoc);
+            XElement typeElement = serialized.Root.Element("Type");
             if (typeElement == null)
             {
                 return null;
@@ -43,11 +43,11 @@ namespace BackgammonProject.Models
                 switch (t)
                 {
                     case MappedType.MESSAGE:
-                        Message msg = new Message();
+                        MessageModel msg = new MessageModel();
                         msg.FromXml(serialized.Root);
                         return msg;
                     case MappedType.USER:
-                        User user = new User();
+                        UserModel user = new UserModel();
                         user.FromXml(serialized.Root);
                         return user;
                     case MappedType.CONTACT:

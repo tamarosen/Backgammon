@@ -2,46 +2,55 @@
 using BackgammonProject.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Windows.UI.Xaml;
 
 namespace BackgammonProject.ViewModel
 {
     public class ChatViewModel : ViewModelBase
     {
-        //public User CurrentUser { get; set; }
-        //public Contact ChatContact { get; set; }
-        //public Message MessageContent { get; set; }
+        private readonly INavigationService _navigationService;
 
         public ObservableCollection<string> HistoryContent { get; set; }
         public string MyMessage { get; set; }
         public string PeerUserName { get; set; }
 
         public ICommand SendCommand { get; set; }
+        public ICommand BackCommand { get; set; }
+        private TalkBackAppContext ctx;
 
-
-        public ChatViewModel(string peerUserName)
+        public ChatViewModel(INavigationService navigationService)
         {
-            TalkBackAppContext ctx = TalkBackAppContext.Get();
+            _navigationService = navigationService;
+            ctx = TalkBackAppContext.Get();
             ctx.ChatWinodw = this;
-            
-            HistoryContent = new ObservableCollection<string>();
-            SendCommand = new RelayCommand( () =>
-            {
-                Message msg = new Message()
-                {
-                    From = ctx.CurrentUser.Name,
-                    Content = MyMessage,
-                    To = PeerUserName
-                };
-                SendMessage(msg);
+            PeerUserName = ctx.PeerUserName;
 
-                MyMessage = string.Empty;
-                RaisePropertyChanged(nameof(MyMessage));
-            });
+            HistoryContent = new ObservableCollection<string>();
+            SendCommand = new RelayCommand(() =>
+           {
+               MessageModel msg = new MessageModel()
+               {
+                   From = ctx.CurrentUser.Name,
+                   Content = MyMessage,
+                   To = PeerUserName
+               };
+               SendMessage(msg);
+
+               MyMessage = string.Empty;
+               RaisePropertyChanged(nameof(MyMessage));
+           });
+
+            BackCommand = new RelayCommand(() =>
+           {
+               _navigationService.NavigateTo(ViewModelLocator.ContactsPageKey);
+               Window.Current.Activate();
+           });
         }
-        
+
 
         public void MessageReceived(string message)
         {
@@ -49,9 +58,9 @@ namespace BackgammonProject.ViewModel
             RaisePropertyChanged(nameof(HistoryContent));
         }
 
-        public void SendMessage(Message msg)
+        public void SendMessage(MessageModel msg)
         {
-            TalkBackAppContext.Get().Dispatcher.SendObjectAsync(msg);
+            ctx.Dispatcher.SendObjectAsync(msg);
         }
 
         internal void Disconnected(ChatRequestResponse resp)

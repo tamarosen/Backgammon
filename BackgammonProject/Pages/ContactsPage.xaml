@@ -8,34 +8,36 @@
     mc:Ignorable="d"
     DataContext="{Binding Source={StaticResource Locator},Path=ContactsVM}">
 
-    <Grid Background="White">
-        
+    <Grid Background="#e6ecff">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
 
-        <Button Name="Menu" Content="▼" FontSize="60" VerticalAlignment="Top" Grid.Row="0"/>
-        <TextBlock Name="Title" Text="Shlook TalkBack" FontSize="60" HorizontalAlignment="Center" Grid.Row="0"/>
+        <!--Button Name="Menu" Content="▼" FontSize="20" VerticalAlignment="Top" Grid.Row="0" Height="39" Grid.RowSpan="2" Width="38"/-->
+        <TextBlock Name="Title" Text="Shlook TalkBack" FontSize="20" HorizontalAlignment="Center" Grid.Row="0" FontFamily="Century Gothic"/>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center"> <!--Space="20"-->
-            <TextBlock Name="userName" Text="{Binding CurrentUserName}" FontSize="70"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> <!--Space="20"-->
-                <Button Name="chatBtn" Content="chat image" Command="{Binding StartChat}" FontSize="40"/>
-                <Button Name="gameBtn" Content="game image" FontSize="40"/>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+            <!--Space="20"-->
+            <TextBlock Name="userName" Text="{Binding CurrentUserName}" FontSize="24" HorizontalAlignment="Center" Margin="10" FontFamily="Century Gothic" Foreground="#3366ff"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!--Space="20"-->
+                <Button Name="chatBtn" Content="start chat" Command="{Binding StartChat}" FontSize="18" Background="#3366ff" Foreground="White" FontFamily="Century Gothic" FontWeight="Bold"/>
             </StackPanel>
+            <Button Name="signOffBtn" Content="Sign off" Command="{Binding LogOutCommand}" FontSize="18" Background="#3366ff" Foreground="White" FontFamily="Century Gothic" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2">
-            <TextBlock Name="onlineContacts" Text="Online contacts:" FontSize="50"/>
+            <TextBlock Name="onlineContacts" Text="Online contacts:" FontSize="24" FontFamily="Century Gothic"/>
             <!--<ListBox Name="onlineList" ItemsSource="{Binding Contacts}" ItemTemplate="{StaticResource ContactsDataTemplate}"/>-->
             <ListBox Name="onlineList" ItemsSource="{Binding OnlineContacts}" SelectionMode="Single" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="20" Height="20" Fill="Green" Margin="0,0,20,0"/>
+                            <Ellipse Width="10" Height="10" Fill="Green" Margin="0,0,20,0"/>
                             <TextBlock Text="{Binding}" FontSize="20"/>
                         </StackPanel>
                     </DataTemplate>
@@ -44,19 +46,19 @@
         </StackPanel>
 
         <StackPanel Grid.Row="3">
-            <TextBlock Name="offlineContacts" Text="Offline contacts:" FontSize="50"/>
+            <TextBlock Name="offlineContacts" Text="Offline contacts:" FontSize="24" FontFamily="Century Gothic"/>
             <!--<ListBox Name="offlineList" ItemsSource="{Binding Contacts}" ItemTemplate="{StaticResource ContactsDataTemplate}"/>-->
             <ListBox Name="offlineList" ItemsSource="{Binding OfflineContacts}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="20" Height="20" Fill="Orange" Margin="0,0,20,0"/>
+                            <Ellipse Width="10" Height="10" Fill="Orange" Margin="0,0,20,0"/>
                             <TextBlock Text="{Binding}" FontSize="20"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        
+
     </Grid>
 </Page>

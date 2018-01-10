@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace BackgammonProject.Models
 {
-    public class Message : AbstractXmlSerializable, INotifyPropertyChanged
+    public class MessageModel : AbstractXmlSerializable, INotifyPropertyChanged
     {
         public string Content { get; set; }
         public string From { get; set; }

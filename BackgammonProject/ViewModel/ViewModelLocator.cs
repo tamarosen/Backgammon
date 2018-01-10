@@ -1,5 +1,4 @@
-﻿using BackgammonProject.Infra;
-using BackgammonProject.Pages;
+﻿using BackgammonProject.Pages;
 using BackgammonProject.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
@@ -18,6 +17,7 @@ namespace BackgammonProject.ViewModel
 
         public const string LoginPageKey = "LoginPage";
         public const string ContactsPageKey = "ContactsPage";
+        public const string ChatPageKey = "ChatPage";
 
 
         public ViewModelLocator()
@@ -26,18 +26,19 @@ namespace BackgammonProject.ViewModel
             var nav = new NavigationService();
             nav.Configure(LoginPageKey, typeof(LoginPage));
             nav.Configure(ContactsPageKey, typeof(ContactsPage));
+            nav.Configure(ChatPageKey, typeof(ChatPage));
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
+            //Services
+            SimpleIoc.Default.Register<INavigationService>(() => nav);
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
+
             //ViewModels
-            SimpleIoc.Default.Register<LoginViewModel>(true);
+            SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<ContactsViewModel>();
             SimpleIoc.Default.Register<ChatViewModel>();
 
-            //Services
-            SimpleIoc.Default.Register<INavigationService>(() => nav);
-            SimpleIoc.Default.Register<IDialogService>();
-            //SimpleIoc.Default.Register<ILoginService, MockupLoginService>();
         }
 
         public LoginViewModel LoginVM
